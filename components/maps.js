@@ -5,7 +5,7 @@ import MapView from 'react-native-maps';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { StackNavigator, TabNavigator, TabView } from 'react-navigation';
 import ViewMoreText from 'react-native-view-more-text';
-
+import Home from './HomePage';
 export default class LocationA extends React.Component {
     static navigationOptions = ({ navigation }) => ({
     });
@@ -96,9 +96,14 @@ export default class LocationA extends React.Component {
                 </ViewMoreText>
 
                 <View >
-                    <TouchableHighlight style={styles.fullWidthButton} >
-                    <Text style={styles.fullWidthButtonText}>Navigate Now </Text>
-                </TouchableHighlight>
+                <TouchableOpacity style={styles.fullWidthButton}>
+                    <Text style={styles.fullWidthButtonText}
+                    onPress={() => this.props.navigation.navigate("Home")}
+                    title="NavigateNow"
+                >
+                    Navigate Now
+                </Text>
+                 </TouchableOpacity>
                 </View>
             </View>
         );

@@ -2,6 +2,7 @@ import * as React from "react";
 import {
   AppRegistry,
   StyleSheet,
+  Button,
   Text,
   View,
   TextInput,
@@ -13,6 +14,7 @@ import {
 
 import { StackNavigator } from "react-navigation";
 import Home from './HomePage';
+import Icon from 'react-native-vector-icons/FontAwesome';
 export default class Register extends React.Component {
   constructor(props) {
     super(props);
@@ -43,18 +45,20 @@ export default class Register extends React.Component {
   }
 
   render() {
+    const {goBack} = this.props.navigation;
     return (
       <View behavior="padding" style={styles.container}>
         <View style={styles.logoContainer}>
           <Image style={styles.logo} source={require("./Yolo.png")} />
         </View>
+        
         <KeyboardAvoidingView>
           <TextInput
             value={this.state.name}
             onChangeText={name => this.setState({ name })}
             style={styles.input}
             placeholder="Name"
-            placeholderTextColor="rgba(255,255,255,0.7)"
+            placeholderTextColor = "#808080"
             returnKeyType="next"
             onSubmitEditing={() => this.emailInput.focus()}
           />
@@ -62,7 +66,7 @@ export default class Register extends React.Component {
             value={this.state.email}
             onChangeText={email => this.setState({ email })}
             style={styles.input}
-            placeholderTextColor="rgba(255,255,255,0.7)"
+            placeholderTextColor = "#808080"
             returnKeyType="next"
             ref={input => (this.emailInput = input)}
             onSubmitEditing={() => this.passwordCInput.focus()}
@@ -77,7 +81,7 @@ export default class Register extends React.Component {
             style={styles.input}
             placeholder="Password"
             secureTextEntry={true}
-            placeholderTextColor="rgba(255,255,255,0.7)"
+            placeholderTextColor = "#808080"
             ref={input => (this.passwordCInput = input)}
             onSubmitEditing={() => this.passwordInput.focus()}
             returnKeyType="next"
@@ -89,7 +93,7 @@ export default class Register extends React.Component {
             style={styles.input}
             placeholder="Confirm Password"
             secureTextEntry={true}
-            placeholderTextColor="rgba(255,255,255,0.7)"
+            placeholderTextColor = "#808080"
             returnKeyType="go"
             secureTextEntry
             ref={input => (this.passwordInput = input)}
@@ -101,6 +105,7 @@ export default class Register extends React.Component {
         >
           <Text style={styles.buttonText}>Register</Text>
         </TouchableHighlight>
+        
       </View>
     );
   }
@@ -120,14 +125,15 @@ const styles = StyleSheet.create({
     alignItems: "flex-start"
   },
   logo: {
-    width: 400,
-    height: 170
+    resizeMode: "stretch",
+    width: 380,
+    height: 340
   },
   input: {
     height: 40,
     width: 350,
     marginBottom: 10,
-    backgroundColor: "rgba(255,255,255,0.2)",
+    backgroundColor: "#FFFFFF",
     color: "#fff",
     paddingHorizontal: 10,
     paddingVertical: 15
@@ -147,7 +153,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: "#FFF",
     fontWeight: "700"
-  }
+  },
 });
 
 AppRegistry.registerComponent("Register", () => Register);

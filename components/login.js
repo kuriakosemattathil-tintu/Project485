@@ -13,6 +13,8 @@ import {
 
 import { StackNavigator } from "react-navigation";
 import Home from './HomePage';
+import Header from './index';
+import Icon from 'react-native-vector-icons/Feather';
 export default class MyLogin extends React.Component {
   constructor() {
     super();
@@ -39,14 +41,16 @@ export default class MyLogin extends React.Component {
   render() {
     return (
       <View style={styles.container}>
+      <Header />
         <View behavior="padding" style={styles.container}>
           <View style={styles.logoContainer}>
             <Image style={styles.logo} source={require("./Yolo.png")} />
           </View>
-          <KeyboardAvoidingView behavior="padding" style={styles.container}>
+          
+          <KeyboardAvoidingView  behavior="padding" enabled>
             <TextInput
               placeholder="Username"
-              placeholderTextColor="rgba(255,255,255,0.7)"
+              placeholderTextColor = "#808080"
               returnKeyType="next"
               onSubmitEditing={() => this.passwordInput.focus()}
               keyboardType="email-address"
@@ -58,7 +62,7 @@ export default class MyLogin extends React.Component {
             />
             <TextInput
               placeholder="Password"
-              placeholderTextColor="rgba(255,255,255,0.7)"
+              placeholderTextColor = "#808080"
               returnKeyType="go"
               secureTextEntry
               ref={input => (this.passwordInput = input)}
@@ -87,7 +91,7 @@ export default class MyLogin extends React.Component {
         <TouchableOpacity style={styles.button}>
           <Text
             style={styles.buttonText}
-            onPress={() => this.props.navigation.navigate("ForgetPassword")}
+            onPress={() => this.props.navigation.navigate("ForgotPassword")}
             title="Forgot Password"
           >
             Forgot Password?
@@ -105,20 +109,21 @@ const styles = StyleSheet.create({
   },
   logoContainer: {
     alignItems: "center",
-    flexGrow: 1,
+    flexGrow: 0.8,
     justifyContent: "center",
     alignItems: "center"
   },
   input: {
     height: 40,
-    backgroundColor: 'rgba(255,255,255,0.2)',
+    backgroundColor: '#FFFFFF',
     marginBottom: 10,
     color: '#FFF',
     paddingHorizontal: 10
   },
   logo: {
-    width: 400,
-    height: 200
+    resizeMode: "stretch",
+    width: 380,
+    height: 340
   },
   subtext: {
     color: "#ffffff",
@@ -143,7 +148,7 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: "#27ae60",
-    paddingVertical: 15
+    paddingVertical: 20
   }
 });
 

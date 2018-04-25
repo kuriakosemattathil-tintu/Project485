@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 
 import Login from './components/login';
-import ForgetPassword from "./components/ForgetPassword";
+import ForgotPassword from "./components/ForgetPassword";
 import Register from "./components/Register";
 console.disableYellowBox = true; 
 /*const MyApp = DrawerNavigator({
@@ -97,10 +97,10 @@ const MyApp = DrawerNavigator({
       title: "Register"
     }
   },
-  ForgetPassword: {
-    screen: ForgetPassword,
+  ForgotPassword: {
+    screen: ForgotPassword,
     navigationOptions: {
-      title: "ForgetPassword"
+      title: "ForgotPassword"
     }
   },
   Events: {
