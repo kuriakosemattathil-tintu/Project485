@@ -1,12 +1,17 @@
 import * as React from 'react';
-import { StyleSheet, Text, View, Button, TouchableOpacity, TouchableHighlight } from 'react-native';
+import { StyleSheet, Text, View, Button, FlatList, TouchableOpacity, TouchableHighlight } from 'react-native';
 import MapView from 'react-native-maps';
 //import HeaderComponent from './HeaderComponents/index';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { StackNavigator, TabNavigator, TabView } from 'react-navigation';
 import ViewMoreText from 'react-native-view-more-text';
 import Home from './HomePage';
+import openMap from 'react-native-open-maps';
+const REQUEST_URL  = 'http://ec2-34-216-18-78.us-west-2.compute.amazonaws.com/event/list';
 export default class LocationA extends React.Component {
+    _goSantaClara() {
+        openMap({ latitude: 37.3541, longitude: -121.9552 });
+      }
     static navigationOptions = ({ navigation }) => ({
     });
     renderViewMore(onPress) {
@@ -23,6 +28,7 @@ export default class LocationA extends React.Component {
         const { state } = this.props.navigation;
         return (
             <View style={{ flex: 1 }}>
+            
                 <MapView style={{ flex: .8 }}
                     initialRegion={{
                         latitude: 37.3541,
@@ -98,7 +104,7 @@ export default class LocationA extends React.Component {
                 <View >
                 <TouchableOpacity style={styles.fullWidthButton}>
                     <Text style={styles.fullWidthButtonText}
-                    onPress={() => this.props.navigation.navigate("Home")}
+                    onPress= {this._goSantaClara}
                     title="NavigateNow"
                 >
                     Navigate Now
@@ -109,6 +115,7 @@ export default class LocationA extends React.Component {
         );
     }
 }
+
 const styles = StyleSheet.create({
         header: {
             fontWeight: "bold", 

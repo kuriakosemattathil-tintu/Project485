@@ -13,17 +13,62 @@ import {
 } from "react-native";
 
 import { StackNavigator } from "react-navigation";
-import Home from './HomePage';
+import Login from './login';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { firebaseRef } from './Loading';
+
 export default class Register extends React.Component {
+ 
   constructor(props) {
     super(props);
     this.state = {
       email: "",
-      name: "",
       password: "",
-      password_confirmation: ""
+      password_confirmation: "",
+      errors: [],
     };
+ //  this._register = this._register.bind(this)
+  }
+  _register() {
+    if(this.state.password == this.state.password_confirmation) {
+    firebaseRef.auth().createUserWithEmailAndPassword(this.state.email,this.state.password).catch(function(error) {
+      console.log(error.code)
+      console.log(error.message)
+    })
+    this.props.navigation.navigate("Login");
+  }
+  else {
+    console.log("password did not match");
+  }
+  }
+  async submit() {
+    try {
+      let response = await fetch('http://ec2-34-216-18-78.us-west-2.compute.amazonaws.com/user/register',{
+        method: 'POST',
+  headers: {
+    'Accept': 'application.json',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+      email: this.state.email,
+      password: this.state.password,
+      repass: this.state.password_confirmation
+    
+  })
+      });
+
+      let res = await response.text();
+      if(response.status >=200 && response.status < 300) {
+        console.log("res success is:" + res);
+        this.props.navigation.navigate("Login");
+      } else {
+        let errors = res;
+        throw errors;
+      }
+      console.log("res is: " + res);
+    } catch(errors) {
+        console.log("caught errors:" + errors);
+    }
   }
 
   static navigationOptions = {
@@ -33,23 +78,12 @@ export default class Register extends React.Component {
     }
   };
 
-  async onRegisterPress() {
-    const { email, password, name } = this.state;
-    console.log(email);
-    console.log(name);
-    console.log(password);
-    await AsyncStorage.setItem("email", email);
-    await AsyncStorage.setItem("name", name);
-    await AsyncStorage.setItem("password", password);
-    this.props.navigation.navigate("Home");
-  }
-
   render() {
     const {goBack} = this.props.navigation;
     return (
       <View behavior="padding" style={styles.container}>
         <View style={styles.logoContainer}>
-          <Image style={styles.logo} source={require("./Yolo.png")} />
+          <Image style={styles.logo} source={require("./yoloo.png")} />
         </View>
         
         <KeyboardAvoidingView>
@@ -88,7 +122,7 @@ export default class Register extends React.Component {
             secureTextEntry
           />
           <TextInput
-            value={this.state.password}
+            value={this.state.password_confirmation}
             onChangeText={password_confirmation => this.setState({ password_confirmation })}
             style={styles.input}
             placeholder="Confirm Password"
@@ -100,7 +134,7 @@ export default class Register extends React.Component {
           />
         </KeyboardAvoidingView>
         <TouchableHighlight
-          onPress={this.onRegisterPress.bind(this)}
+          onPress={this.submit.bind(this)}
           style={styles.button}
         >
           <Text style={styles.buttonText}>Register</Text>
@@ -116,7 +150,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "flex-start",
     alignItems: "center",
-    backgroundColor: "#3498db",
+    backgroundColor: "#3654C1",
   },
   logoContainer: {
     alignItems: "flex-start",
@@ -125,16 +159,15 @@ const styles = StyleSheet.create({
     alignItems: "flex-start"
   },
   logo: {
-    resizeMode: "stretch",
-    width: 380,
-    height: 340
+    width: 600,
+    height: 350
   },
   input: {
     height: 40,
     width: 350,
     marginBottom: 10,
     backgroundColor: "#FFFFFF",
-    color: "#fff",
+    color: "black",
     paddingHorizontal: 10,
     paddingVertical: 15
   },

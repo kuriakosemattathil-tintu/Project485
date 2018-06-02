@@ -69,6 +69,7 @@ const styles = StyleSheet.create({
 } */
 
 export default class App extends React.Component {
+  
   render() {
     return (
       <View style={styles.container}>
@@ -79,6 +80,7 @@ export default class App extends React.Component {
 }
 
 const MyApp = DrawerNavigator({
+ 
   Login: {
     screen: Login,
     navigationOptions: {
@@ -91,6 +93,7 @@ const MyApp = DrawerNavigator({
       title: "Home"
     }
   },
+  
   Register: {
     screen: Register,
     navigationOptions: {

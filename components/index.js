@@ -3,13 +3,13 @@ import { Header, Left, Body, Right, Button , Content, List, ListItem, Text} from
 import { StyleSheet, View } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { DrawerNavigator } from 'react-navigation';
-
+import drawer from  '/Users/tintu/Desktop/Project485/App';
 export const HeaderComponent = () => {
     return (
             <Header style= {{backgroundColor: "steelblue"}} justifiedContent= "center" iosBarStyle="light-content">
                 <Content>
                 <List>
-                    <ListItem button iconLeft >
+                    <ListItem button iconLeft onPress={this._click}>
                         <Icon name='menu' style={styles.icon}/>
                     </ListItem>
                 </List>
@@ -25,6 +25,7 @@ export const HeaderComponent = () => {
             </Header>
     
     );
+
 }
 const styles = StyleSheet.create({
     icon: {
