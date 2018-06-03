@@ -2,6 +2,7 @@ import * as React from 'react';
 import { Text, View, StyleSheet, Dimensions } from 'react-native';
 import { TabViewAnimated, TabBar, SceneMap } from 'react-native-tab-view';
 import API from './RestAPI';
+import { StackNavigator } from "react-navigation";
 const initialLayout = {
     height: 0,
     width: Dimensions.get('window').width,

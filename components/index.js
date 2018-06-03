@@ -6,7 +6,7 @@ import { DrawerNavigator } from 'react-navigation';
 import drawer from  '/Users/tintu/Desktop/Project485/App';
 export const HeaderComponent = () => {
     return (
-            <Header style= {{backgroundColor: "steelblue"}} justifiedContent= "center" iosBarStyle="light-content">
+            <Header style= {{backgroundColor: "green"}} justifiedContent= "center" iosBarStyle="light-content">
                 <Content>
                 <List>
                     <ListItem button iconLeft onPress={this._click}>

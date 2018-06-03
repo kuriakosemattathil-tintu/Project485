@@ -14,7 +14,9 @@ import {
 } from "react-native";
 import { StackNavigator } from "react-navigation";
 import Home from './HomePage';
+import Rest from './RestAPI';
 import Header from './index';
+import Register from './Register';
 import Icon from 'react-native-vector-icons/Feather';
 import { Actions } from 'react-native-router-flux';
 
@@ -84,7 +86,7 @@ export default class MyLogin extends React.Component {
         let accessToken = res;
         this.storeToken(accessToken);
         console.log("res success is:" + res);
-        this.props.navigation.navigate("Home");
+        this.props.navigation.navigate("Rest");
       } else {
         let error = res;
         throw error;

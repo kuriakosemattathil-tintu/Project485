@@ -1,7 +1,7 @@
 import * as React from 'react';
-// import { Constants } from 'expo';
 import Home from './components/HomePage';
 import Maps from './components/maps';
+import Rest from './components/RestAPI';
 import { DrawerNavigator, StackNavigator, DrawerItems, SafeAreaView } from 'react-navigation';
 // var { height } = Dimensions.get('window');
 import {
@@ -15,104 +15,31 @@ import {
 import Login from './components/login';
 import ForgotPassword from "./components/ForgetPassword";
 import Register from "./components/Register";
+import ForgetPassword from './components/ForgetPassword';
 console.disableYellowBox = true; 
-/*const MyApp = DrawerNavigator({
-  Home:{
-      screen: Home
-  },
-  Login:{
-    screen: Login
-  },
-  Events: {
-      screen: Maps
-  },
-  Logout: {
-    screen: Home
+
+export default class App extends React.Component {
+  
+  render() {
+    return (
+      <View style={styles.container}>
+      <App1 />
+      </View>
+    );
   }
+}
+
+const App1 = StackNavigator ({
+  Login: { screen: Login},
+  Home: { screen: Home},
+  Rest: { screen: Rest},
+  Maps: { screen: Maps},
+  Register: { screen: Register},
+  ForgotPassword: {screen: ForgetPassword},
+}, {
+initialRouteName: 'Login',
 }
 );
-/*
-
-export default class App extends React.Component {
-  render() {
-    return (
-      <View style={styles.container}>
-        <MyApp />
-      </View>
-    );
-  }
-}
-/*
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    flexDirection: 'column'
-  },
-}); */
-
-/*class Home1 extends React.Component<{}> {
-  static navigationOptions = {
-    headerStyle: {
-      backgroundColor: "#16a085",
-      elevation: null
-    },
-    header: null
-  };
-  render() {
-    return (
-      <View style={styles.container}>
-        <StatusBar barStyle="light-content" backgroundColor="#16a085" />
-        <Home navigation={this.props.navigation} />
-      </View>
-    );
-  }
-} */
-
-export default class App extends React.Component {
-  
-  render() {
-    return (
-      <View style={styles.container}>
-      <MyApp />
-      </View>
-    );
-  }
-}
-
-const MyApp = DrawerNavigator({
- 
-  Login: {
-    screen: Login,
-    navigationOptions: {
-      title: "Login"
-    }
-  },
-  Home: {
-    screen: Home,
-    navigationOptions: {
-      title: "Home"
-    }
-  },
-  
-  Register: {
-    screen: Register,
-    navigationOptions: {
-      title: "Register"
-    }
-  },
-  ForgotPassword: {
-    screen: ForgotPassword,
-    navigationOptions: {
-      title: "ForgotPassword"
-    }
-  },
-  Events: {
-    screen: Maps
-},
-Logout: {
-  screen: Login
-},
-});
 
 const styles = StyleSheet.create({
   container: {

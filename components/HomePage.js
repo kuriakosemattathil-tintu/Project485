@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Constants } from 'expo';
 import GooglePlaces from './places'; // 1.2.12
 import Flexbox from 'flexbox-react';
-import TabViewAnimated from './tabs';
+import TabViewAnimated from './RestAPI';
 import { StackNavigator, TabNavigator, TabView } from 'react-navigation';
 import Expo from 'expo';
 import HeaderComponent from './index';

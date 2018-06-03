@@ -7,6 +7,8 @@ import Maps from './maps';
 import Login from './login';
 import { StackNavigator, NavigationActions } from "react-navigation";
 import { Dropdown } from 'react-native-material-dropdown';
+import GooglePlaces from './places';
+import Index from './index';
 console.disableYellowBox = true;
 const REQUEST_URL  = 'http://ec2-34-216-18-78.us-west-2.compute.amazonaws.com/event/list';
 
@@ -58,6 +60,7 @@ export default class Rest extends React.Component {
         .done();
       }
     render() {
+        
         let data = [{
             value: 'Distance',
           }, {
@@ -72,7 +75,11 @@ export default class Rest extends React.Component {
         }
         return (
             
-            <View >
+            <View style={[styles.container, { backgroundColor: 'steelblue' }]}>
+            <Index />
+            <Text style={styles.baseText}>
+                    Welcome, Kuriakose
+                </Text>
                 <Picker
                 style={{width: '70%', backgroundColor: '#FFF0E0',
                 borderColor: 'black',width: 140,alignSelf: 'flex-end',
@@ -94,23 +101,22 @@ export default class Rest extends React.Component {
                 // renderRow={this.renderRow.bind(this)}
                 renderRow = {(item) =>
                             <ScrollView>
-                                <ListItem >
+                                <ListItem onPress={()=>this.props.navigation.navigate("Maps")}>
                                     <Left>
                                         <Text style={styles.headerText}> {item.name} </Text>
                                     </Left>   
-                                
+                                   
                                     <Body>
                                         <Text style={styles.headerText}> {item.dates.start.localTime} </Text>
                                         <Text style={styles.headerText}> {item.distance} {item.units} </Text>
                                         <Text style={styles.headerText}>{item._embedded.venues.name}  </Text>
                                     </Body>
+                                    
                                     <Right>
                                     <Icon name="chevron-right" style={styles.icon} />
                                     </Right>
-                                    <Button style={styles.headerText}
-                                    title="Go "
-                            //    onPress={() => this.props.navigation.navigate('Maps')}
-                                    />
+                                    
+                           
                                 </ListItem>
                             </ScrollView>
                         
@@ -122,7 +128,18 @@ export default class Rest extends React.Component {
         );
     }
 }
+
 const styles = StyleSheet.create({
+    container: {
+        height: 700,
+    },
+    baseText: {
+        color: "white",
+        fontFamily: 'Cochin',
+        textAlign: 'center',
+        fontWeight: 'bold',
+        fontSize: 20,
+    },
     icon: {
         color: "white",
         fontFamily: 'Cochin',
