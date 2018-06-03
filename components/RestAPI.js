@@ -1,53 +1,26 @@
 import * as React from 'react';
-import { View, StyleSheet, FlatList, ScrollView, TouchableHighlight, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
+import { View, StyleSheet,PickerIOS, ActivityIndicator, Button, ListView, FlatList, ScrollView, TouchableHighlight, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
 // import { List, ListItem } from "react-native-elements";
-import { Container, Content, List, ListItem, Text, Left, Right, Body } from 'native-base';
+import { Container, Content, List, ListItem, Text, Left, Right, Body, Picker} from 'native-base';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Maps from './maps';
 import Login from './login';
 import { StackNavigator, NavigationActions } from "react-navigation";
+import { Dropdown } from 'react-native-material-dropdown';
 console.disableYellowBox = true;
 const REQUEST_URL  = 'http://ec2-34-216-18-78.us-west-2.compute.amazonaws.com/event/list';
-
 
 export default class Rest extends React.Component {
     
     constructor(props) {
         super(props);
         this.state = {
-            dataSource: [],
+          //  dataSource: [],
+          PickerValue:'',
+            isLoading: true
         }
         this.fetchData = this.fetchData.bind(this);
-    }
-
-    renderItem = ({ item }) => {
-        return (
-        
-            <Content>
-                <ScrollView>
-                <List>
-                    <ListItem >
-                        <Left>
-                            <Text style={styles.headerText}> {item.name} </Text>
-                        </Left>   
-                        
-                        <Body>
-                            <Text style={styles.headerText}> {item.dates.start.localTime} </Text>
-                            <Text style={styles.headerText}> {item.dates.start.localDate} </Text>
-                            <Text style={styles.headerText}>{item._embedded.venues.name}  </Text>
-                        </Body>
-                        <Right>
-                        <Icon name="chevron-right" style={styles.icon} />
-                
-                        </Right>
-                    </ListItem>
-                    
-                </List>
-                </ScrollView>
-            </Content> 
-            
-        )}
-           
+    } 
     renderSeparator = () => {
         return (
             <View style={{ height: 2, width: '100%', backgroundColor: 'white' }}>
@@ -75,21 +48,75 @@ export default class Rest extends React.Component {
             })
           })
           .then((response) => response.json())
-          .then((responseData) => {
+          .then((responseData) => { 
+        let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
             this.setState({
-                dataSource: responseData.items,
+                isLoading: false,
+                dataSource: ds.cloneWithRows(responseData.items),
             });
           })
         .done();
       }
     render() {
+        let data = [{
+            value: 'Distance',
+          }, {
+            value: 'Time',
+          }];
+        if(this.state.isLoading) {
+            return(
+                <View>
+                    <ActivityIndicator />
+                    </View>
+            )
+        }
         return (
+            
             <View >
-                <FlatList
-                    data={this.state.dataSource}
-                    renderItem={this.renderItem.bind(this)}
-                    keyExtractor={(item, index) => index}
-                    ItemSeparatorComponent={this.renderSeparator}
+                <Picker
+                style={{width: '70%', backgroundColor: '#FFF0E0',
+                borderColor: 'black',width: 140,alignSelf: 'flex-end',
+                height: 30}}
+                selectedValue={this.state.PickerValue}
+                onValueChange={(itemValue,itemIndex) => 
+                this.setState({PickerValue:itemValue})}
+                >
+                <Picker.Item label="Filter By" value="" />
+                <Picker.Item label="< 5 Miles" value="<5 Miles" />
+                <Picker.Item label="< 10 Miles" value="<10 Miles" />
+                <Picker.Item label="< 15 Miles" value="<15 Miles" />
+                <Picker.Item label="< 25 Miles" value="<25 Miles" />
+                <Picker.Item label="< 50 Miles" value="<50 Miles" />
+                <Picker.Item label="Any" value="Any" />
+                </Picker>
+                <ListView
+                   dataSource={this.state.dataSource}
+                // renderRow={this.renderRow.bind(this)}
+                renderRow = {(item) =>
+                            <ScrollView>
+                                <ListItem >
+                                    <Left>
+                                        <Text style={styles.headerText}> {item.name} </Text>
+                                    </Left>   
+                                
+                                    <Body>
+                                        <Text style={styles.headerText}> {item.dates.start.localTime} </Text>
+                                        <Text style={styles.headerText}> {item.distance} {item.units} </Text>
+                                        <Text style={styles.headerText}>{item._embedded.venues.name}  </Text>
+                                    </Body>
+                                    <Right>
+                                    <Icon name="chevron-right" style={styles.icon} />
+                                    </Right>
+                                    <Button style={styles.headerText}
+                                    title="Go "
+                            //    onPress={() => this.props.navigation.navigate('Maps')}
+                                    />
+                                </ListItem>
+                            </ScrollView>
+                        
+                    }  
+                  keyExtractor={(item, index) => index}
+                ItemSeparatorComponent={this.renderSeparator}
                 />
             </View>
         );

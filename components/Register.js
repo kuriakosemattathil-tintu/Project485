@@ -15,7 +15,6 @@ import {
 import { StackNavigator } from "react-navigation";
 import Login from './login';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { firebaseRef } from './Loading';
 
 export default class Register extends React.Component {
  
@@ -28,18 +27,6 @@ export default class Register extends React.Component {
       errors: [],
     };
  //  this._register = this._register.bind(this)
-  }
-  _register() {
-    if(this.state.password == this.state.password_confirmation) {
-    firebaseRef.auth().createUserWithEmailAndPassword(this.state.email,this.state.password).catch(function(error) {
-      console.log(error.code)
-      console.log(error.message)
-    })
-    this.props.navigation.navigate("Login");
-  }
-  else {
-    console.log("password did not match");
-  }
   }
   async submit() {
     try {

@@ -15,7 +15,6 @@ import {
 import { StackNavigator } from "react-navigation";
 import Home from './HomePage';
 import Header from './index';
-import { firebaseRef } from './Loading';
 import Icon from 'react-native-vector-icons/Feather';
 import { Actions } from 'react-native-router-flux';
 
