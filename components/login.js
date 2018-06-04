@@ -85,7 +85,6 @@ export default class MyLogin extends React.Component {
         this.setState({error: ""});
         let accessToken = res;
         this.storeToken(accessToken);
-        console.log("res success is:" + res);
         this.props.navigation.navigate("Rest");
       } else {
         let error = res;

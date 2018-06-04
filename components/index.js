@@ -9,7 +9,7 @@ export const HeaderComponent = () => {
             <Header style= {{backgroundColor: "green"}} justifiedContent= "center" iosBarStyle="light-content">
                 <Content>
                 <List>
-                    <ListItem button iconLeft onPress={this._click}>
+                    <ListItem button iconLeft>
                         <Icon name='menu' style={styles.icon}/>
                     </ListItem>
                 </List>

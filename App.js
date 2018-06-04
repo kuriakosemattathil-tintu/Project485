@@ -2,6 +2,7 @@ import * as React from 'react';
 import Home from './components/HomePage';
 import Maps from './components/maps';
 import Rest from './components/RestAPI';
+import PoiPage from './components/poi';
 import { DrawerNavigator, StackNavigator, DrawerItems, SafeAreaView } from 'react-navigation';
 // var { height } = Dimensions.get('window');
 import {
@@ -33,8 +34,9 @@ const App1 = StackNavigator ({
   Login: { screen: Login},
   Home: { screen: Home},
   Rest: { screen: Rest},
-  Maps: { screen: Maps},
+  Maps: { screen: Maps, title: "Event Details"},
   Register: { screen: Register},
+  POI: {screen: PoiPage, title:"POI"},
   ForgotPassword: {screen: ForgetPassword},
 }, {
 initialRouteName: 'Login',
