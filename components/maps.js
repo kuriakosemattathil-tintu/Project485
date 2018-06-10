@@ -52,11 +52,11 @@ export default class Map extends React.Component {
             this.setState({
                 isLoading: false,
                 dataSource: ds.cloneWithRows(responseData._embedded.venues),
-                
             });
           })
         .done();
       }
+
 
     _goSantaClara() {
         openMap({ latitude: 37.335641, longitude: -121.888322, name: 'San Jose' });

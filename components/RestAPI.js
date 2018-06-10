@@ -9,16 +9,17 @@ import { StackNavigator, NavigationActions } from "react-navigation";
 import { Dropdown } from 'react-native-material-dropdown';
 import GooglePlaces from './places';
 import Index from './index';
+import { filter } from 'rxjs/operator/filter';
 console.disableYellowBox = true;
 const REQUEST_URL  = 'http://ec2-34-216-18-78.us-west-2.compute.amazonaws.com/event/list';
 const fetch_URL = 'http://ec2-34-216-18-78.us-west-2.compute.amazonaws.com/poi/list';
-
 export default class Rest extends React.Component {
-    
+    distances = [ "5 Miles", "10 Miles", "25 Miles", "50 Miles", "Any"];
+
     constructor(props) {
         super(props);
         this.state = {
-          //  dataSource: [],
+          dataSource: [],
           PickerValue:'',
             isLoading: true
         }
@@ -49,8 +50,14 @@ export default class Rest extends React.Component {
                        'Content-Type': 'application/json', 
               }),
               body: JSON.stringify({
-                lat: 37.354107,
-                lng: -121.955238
+                lat: 37.349642,
+                lng: -121.938987,
+                opt: {
+                    sort:"distance,asc",
+                    endDateTime:"2018-06-04T19:34:25.002Z",
+                    radius:"25",
+                    unit:"miles"
+                }
               
             })
           })
@@ -64,9 +71,8 @@ export default class Rest extends React.Component {
           })
         .done();
       }
-      
     render() {
-        
+       
         let data = [{
             value: 'Distance',
           }, {
@@ -110,6 +116,7 @@ export default class Rest extends React.Component {
                 // renderRow={this.renderRow.bind(this)}
                 renderRow = {(item) =>
                             <ScrollView>
+                                
                                 <ListItem onPress={()=>this.props.navigation.navigate("Maps")}>
                                     <Left>
                                         <Text style={styles.headerText}> {item.name} </Text>
@@ -130,6 +137,7 @@ export default class Rest extends React.Component {
                             </ScrollView>
                         
                     }  
+                
                   keyExtractor={(item, index) => index}
                 ItemSeparatorComponent={this.renderSeparator}
                 />
@@ -155,14 +163,14 @@ const styles = StyleSheet.create({
         fontFamily: 'Cochin',
         textAlign: 'center',
         fontWeight: 'bold',
-        fontSize: 20,
+        fontSize: 18,
     },
     icon: {
         color: "white",
         fontFamily: 'Cochin',
         textAlign: 'center',
         fontWeight: 'bold',
-        fontSize: 20,
+        fontSize: 18,
         lineHeight: 30,
     },
     headerText: {
