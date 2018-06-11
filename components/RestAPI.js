@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View, StyleSheet,PickerIOS, ActivityIndicator, Button, ListView, FlatList, ScrollView, TouchableHighlight, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
+import { Platform, View, StyleSheet,PickerIOS, ActivityIndicator, Button, ListView, FlatList, ScrollView, TouchableHighlight, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
 // import { List, ListItem } from "react-native-elements";
 import { Container, Content, List, ListItem, Text, Left, Right, Body, Picker} from 'native-base';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -9,6 +9,7 @@ import { StackNavigator, NavigationActions } from "react-navigation";
 import { Dropdown } from 'react-native-material-dropdown';
 import GooglePlaces from './places';
 import Index from './index';
+import { Constants, Location, Permissions } from 'expo';
 import { filter } from 'rxjs/operator/filter';
 console.disableYellowBox = true;
 const REQUEST_URL  = 'http://ec2-34-216-18-78.us-west-2.compute.amazonaws.com/event/list';
@@ -21,11 +22,13 @@ export default class Rest extends React.Component {
         this.state = {
           dataSource: [],
           PickerValue:'',
-            isLoading: true
+          isLoading: true,
+          location: null,
+          errorMessage: null
         }
     this.fetchData = this.fetchData.bind(this);
       //  this.fetchPOI = this.fetchPOI.bind(this);
-    } 
+    }
     static navigationOptions = ({ navigation }) => ({
         title: 'Events',
     });
@@ -36,43 +39,73 @@ export default class Rest extends React.Component {
         )
     }
 
-    componentDidMount() {
-      this.fetchData();
-    }
-    
-    fetchData() {
+    componentWillMount() {
+      if (Platform.OS === 'android' && !Constants.isDevice) {
         this.setState({
-          dataSource: null,
+          errorMessage: 'Oops, this will not work on Sketch in an Android emulator. Try it on your device!',
         });
+      } else {
+        this._getLocationAsync();
+      }
+    }
+
+    componentDidMount() {
+      this.fetchData()
+    }
+    _getLocationAsync = async () => {
+      let { status } = await Permissions.askAsync(Permissions.LOCATION);
+      if (status !== 'granted') {
+        this.setState({
+          errorMessage: 'Permission to access location was denied',
+        });
+      }
+
+      let location = await Location.getCurrentPositionAsync({enableHighAccuracy:true});
+      this.setState({ location });
+      //this.fetchData();
+    };
+    getISOStringWithoutSecsAndMillisecs(date) {
+      const dateAndTime = date.toISOString().split('T')
+      const time = dateAndTime[1].split(':')
+      return dateAndTime[0]+'T'+time[0]+':'+time[1]+':00Z'
+    }
+
+    fetchData() {
+      console.log(this.state.location)
+        this.setState({
+          isLoading: true,
+        });
+        var date = new Date();
+        date.setDate(date.getDate() + 2);
+        date = this.getISOStringWithoutSecsAndMillisecs(date);
         fetch(REQUEST_URL,{
             method: 'POST',
             headers: new Headers({
-                       'Content-Type': 'application/json', 
+                       'Content-Type': 'application/json',
               }),
               body: JSON.stringify({
-                lat: 37.349642,
-                lng: -121.938987,
+                lat: this.state.location ? this.state.location.coords.latitude : 37.349642,
+                lng: this.state.location ? this.state.location.coords.longitude : -121.938987,
                 opt: {
                     sort:"distance,asc",
-                    endDateTime:"2018-06-04T19:34:25.002Z",
+                    endDateTime:date,
                     radius:"25",
                     unit:"miles"
                 }
-              
+
             })
           })
           .then((response) => response.json())
-          .then((responseData) => { 
+          .then((responseData) => {
         let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
             this.setState({
                 isLoading: false,
                 dataSource: ds.cloneWithRows(responseData.items),
             });
-          })
-        .done();
+          }).done();
       }
     render() {
-       
+
         let data = [{
             value: 'Distance',
           }, {
@@ -86,20 +119,17 @@ export default class Rest extends React.Component {
             )
         }
         return (
-            
+
             <View style={[styles.container, { backgroundColor: 'steelblue' }]}>
-            <Index />
-            <Text style={styles.baseText}>
-                    Welcome, Kuriakose
-                </Text>
+
                 <Picker
                 style={{width: '70%', backgroundColor: '#FFF0E0',
                 borderColor: 'black',width: 140,alignSelf: 'flex-end',
                 height: 30}}
                 selectedValue={this.state.PickerValue}
-                onValueChange={(itemValue,itemIndex) => 
+                onValueChange={(itemValue,itemIndex) =>
                 this.setState({PickerValue:itemValue})}
-            
+
                 >
                 <Picker.Item label="Filter By" value="" />
                 <Picker.Item label="< 5 Miles" value="<5 Miles" />
@@ -108,36 +138,36 @@ export default class Rest extends React.Component {
                 <Picker.Item label="< 25 Miles" value="<25 Miles" />
                 <Picker.Item label="< 50 Miles" value="<50 Miles" />
                 <Picker.Item label="Any" value="Any" />
-            
+
                 </Picker>
-                
+
                 <ListView
                    dataSource={this.state.dataSource}
-                // renderRow={this.renderRow.bind(this)}
+                //renderRow={this.renderRow.bind(this)}
                 renderRow = {(item) =>
                             <ScrollView>
-                                
+
                                 <ListItem onPress={()=>this.props.navigation.navigate("Maps")}>
                                     <Left>
-                                        <Text style={styles.headerText}> {item.name} </Text>
-                                    </Left>   
-                                   
+                                        <Text style={styles.headerText}> {item.name}</Text>
+                                    </Left>
+
                                     <Body>
                                         <Text style={styles.headerText}> {item.dates.start.localTime} </Text>
                                         <Text style={styles.headerText}> {item.distance} {item.units} </Text>
                                         <Text style={styles.headerText}>{item._embedded.venues.name}  </Text>
                                     </Body>
-                                    
+
                                     <Right>
                                     <Icon name="chevron-right" style={styles.icon} />
                                     </Right>
-                                
-                           
+
+
                                 </ListItem>
                             </ScrollView>
-                        
-                    }  
-                
+
+                    }
+
                   keyExtractor={(item, index) => index}
                 ItemSeparatorComponent={this.renderSeparator}
                 />

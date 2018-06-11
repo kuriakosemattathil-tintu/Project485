@@ -22,6 +22,17 @@ export default class Places extends React.Component {
                 getDefaultValue={() => {
                     return '';
                 }}
+                styles={{
+                 textInputContainer: {
+                   width: '100%'
+                 },
+                 description: {
+                   fontWeight: 'bold'
+                 },
+                 predefinedPlacesDescription: {
+                   color: '#1faadb'
+                 }
+               }}
                 query={{
                     //  https://developers.google.com/places/web-service/autocomplete
                     key: 'AIzaSyAw-0PtoxgKN-Mxtx9P3fKd7ICTkaOGgGY',

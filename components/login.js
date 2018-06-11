@@ -12,23 +12,26 @@ import {
   Text, // Renders text
   View // Container component
 } from "react-native";
-import { StackNavigator } from "react-navigation";
+import { Container, Content, Form, Item, Input } from 'native-base';
+import {StackNavigator} from "react-navigation";
 import Home from './HomePage';
 import Rest from './RestAPI';
 import Header from './index';
 import Register from './Register';
 import Icon from 'react-native-vector-icons/Feather';
-import { Actions } from 'react-native-router-flux';
+import {Actions} from 'react-native-router-flux';
 
 const ACCESS_TOKEN = 'access_token';
-const DismissKeyboard = ({ children }) => (
-  <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-    {children}
-  </TouchableWithoutFeedback>
-);
+const DismissKeyboard = ({children}) => (<TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+  {children}
+</TouchableWithoutFeedback>);
 export default class MyLogin extends React.Component {
-  state = { email: '', password: '', errorMessage: null }
-  
+  state = {
+    email: '',
+    password: '',
+    errorMessage: null
+  }
+
   constructor(props) {
     super(props);
     this.state = {
@@ -36,15 +39,15 @@ export default class MyLogin extends React.Component {
       password: "",
       error: ""
     }
-  // this._login = this._login.bind(this)
-   // this._register = this._register.bind(this)
+    // this._login = this._login.bind(this)
+    // this._register = this._register.bind(this)
   }
- 
+
   async storeToken(accessToken) {
     try {
       await AsyncStorage.setItem(ACCESS_TOKEN, accessToken);
       this.getToken();
-    } catch(error) {
+    } catch (error) {
       console.log("something went wrong");
     }
   }
@@ -52,7 +55,7 @@ export default class MyLogin extends React.Component {
     try {
       let token = await AsyncStorage.getItem(ACCESS_TOKEN);
       console.log("token is" + token);
-    } catch(error) {
+    } catch (error) {
       console.log("something went wrong");
     }
   }
@@ -64,100 +67,62 @@ export default class MyLogin extends React.Component {
     },
     header: null
   };
- 
+
   async onLoginPressed(navigate) {
     try {
-      let response = await fetch('http://ec2-34-216-18-78.us-west-2.compute.amazonaws.com/user/login',{
+      let response = await fetch('http://ec2-34-216-18-78.us-west-2.compute.amazonaws.com/user/login', {
         method: 'POST',
-  headers: {
-    'Accept': 'application.json',
-    'Content-Type': 'application/json'
-  },
-  body: JSON.stringify({
-      email: this.state.email,
-      password: this.state.password
-    
-  })
+        headers: {
+          'Accept': 'application.json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({email: this.state.email, password: this.state.password})
       });
 
       let res = await response.text();
-      if(response.status >=200 && response.status < 300) {
+      if (response.status >= 200 && response.status < 300) {
         this.setState({error: ""});
         let accessToken = res;
         this.storeToken(accessToken);
-        this.props.navigation.navigate("Rest");
+        this.props.navigation.navigate("Home");
       } else {
         let error = res;
         throw error;
       }
-     
-    } catch(error) {
+
+    } catch (error) {
       this.setState({error: error});
-        console.log("caught errors:" + error);
+      console.log("caught errors:" + error);
     }
   }
   render() {
-    return (
-      <DismissKeyboard>
-      <View style={styles.container}> 
-        <Header />
-          <View style={styles.logoContainer}>
-            <Image style={styles.logo} source={require("./yoloo.png")} />
-          </View>
-          <KeyboardAvoidingView  behavior="padding" >
-            <TextInput
-              placeholder="Username"
-              placeholderTextColor = "#808080"
-              returnKeyType="next"
-              onSubmitEditing={() => this.passwordInput.focus()}
-              keyboardType="email-address"
-              autoCapitalize="none"
-              blurOnSubmit={ true }
-              autoCorrect={false}
-              value={this.state.email}
-              onChangeText={email => this.setState({ email })}
-              style={styles.input}
-            />
-            
-            <TextInput
-              placeholder="Password"
-              placeholderTextColor = "#808080"
-              returnKeyType="go"
-              secureTextEntry
-              ref={input => (this.passwordInput = input)}
-              value={this.state.password}
-              onChangeText={password => this.setState({ password })}
-              style={styles.input}
-            />
-            </KeyboardAvoidingView>
-            <TouchableOpacity
-              style={styles.buttonContainer}
-              onPress={this.onLoginPressed.bind(this)}
-            >
-              <Text style={styles.buttonText}>LOGIN</Text>
-            </TouchableOpacity>
-            
+    return (<DismissKeyboard>
+      <View style={styles.container}>
+        <Header/>
+        <View style={styles.logoContainer}>
+          <Image style={styles.logo} source={require("./yoloo.png")}/>
+        </View>
+        <KeyboardAvoidingView behavior="padding" style={styles.inputHolder}>
+          <TextInput placeholder="Email" placeholderTextColor="#808080" returnKeyType="next" onSubmitEditing={() => this.passwordInput.focus()} keyboardType="email-address" autoCapitalize="none" blurOnSubmit={true} autoCorrect={false} value={this.state.email} onChangeText={email => this.setState({email})} style={styles.input}/>
+
+          <TextInput placeholder="Password" placeholderTextColor="#808080" returnKeyType="go" autoCapitalize='none' secureTextEntry={true} ref={input => (this.passwordInput = input)} value={this.state.password} onChangeText={password => this.setState({password})} style={styles.input}/>
+        </KeyboardAvoidingView>
+        <TouchableOpacity style={styles.buttonContainer} onPress={this.onLoginPressed.bind(this)}>
+          <Text style={styles.buttonText}>LOGIN</Text>
+        </TouchableOpacity>
+
         <TouchableOpacity style={styles.button}>
-          <Text
-            style={styles.buttonText}
-            onPress={() => this.props.navigation.navigate("Register")}
-            title="Sign up"
-          >
+          <Text style={styles.buttonText} onPress={() => this.props.navigation.navigate("Register")} title="Sign up">
             Sign up
           </Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button}>
-          <Text
-            style={styles.buttonText}
-            onPress={() => this.props.navigation.navigate("ForgotPassword")}
-            title="Forgot Password"
-          >
+        <TouchableOpacity style={styles.forgotButton}>
+          <Text style={styles.buttonText} onPress={() => this.props.navigation.navigate("ForgotPassword")} title="Forgot Password">
             Forgot Password?
           </Text>
         </TouchableOpacity>
       </View>
-      </DismissKeyboard>
-    );
+    </DismissKeyboard>);
   }
 }
 
@@ -177,7 +142,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     marginBottom: 10,
     color: 'black',
-    paddingHorizontal: 15
+    paddingHorizontal: 15,
+    width: 300
+  },
+  inputHolder: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   logo: {
     width: 600,
@@ -190,14 +161,14 @@ const styles = StyleSheet.create({
     textAlign: "center",
     opacity: 0.8
   },
-  keyboard:{
+  keyboard: {
     margin: 20,
     padding: 20,
     alignSelf: "stretch"
   },
   buttonContainer: {
     backgroundColor: "rgba(255,255,255,0.2)",
-    paddingVertical: 15
+    paddingVertical: 20
   },
   buttonText: {
     textAlign: "center",
@@ -206,7 +177,11 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: "#27ae60",
-    paddingVertical:20
+    paddingVertical: 20
+  },
+  forgotButton: {
+    backgroundColor: "#16783f",
+    paddingVertical: 20
   }
 });
 

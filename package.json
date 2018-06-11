@@ -23,7 +23,7 @@
     "expo": "^23.0.4",
     "firebase": "^5.0.3",
     "flexbox-react": "^4.4.0",
-    "native-base": "^2.4.2",
+    "native-base": "^2.5.1",
     "react": "16.0.0",
     "react-dom": "^16.4.0",
     "react-native": "^0.50.4",
