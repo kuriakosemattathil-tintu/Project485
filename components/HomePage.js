@@ -79,7 +79,7 @@ export default class Home extends React.Component {
                   <GooglePlaces />
                   </View>
                   <View style ={styles.box2} >
-                  <TabViewAnimated />
+                  <TabViewAnimated navigation={this.props.navigation}/>
                   </View>
               </View>
           );

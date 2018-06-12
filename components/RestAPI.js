@@ -28,6 +28,7 @@ export default class Rest extends React.Component {
         }
     this.fetchData = this.fetchData.bind(this);
     this.filterEvents = this.filterEvents.bind(this);
+    this._getLocationAsync = this._getLocationAsync.bind(this)
       //  this.fetchPOI = this.fetchPOI.bind(this);
     }
     static navigationOptions = ({ navigation }) => ({
@@ -65,6 +66,27 @@ export default class Rest extends React.Component {
       this.setState({ location });
       this.fetchData();
     };
+    _renderRow = (item) =>{return(<ScrollView>
+
+                    <ListItem onPress={()=>this.props.navigation.navigate("Maps")}>
+                        <Left>
+                            <Text style={styles.headerText}> {item.name}</Text>
+                        </Left>
+
+                        <Body>
+                            <Text style={styles.headerText}> {item.dates.start.localTime} </Text>
+                            <Text style={styles.headerText}> {item.distance} {item.units} </Text>
+                            <Text style={styles.headerText}>{item._embedded.venues.name}  </Text>
+                        </Body>
+
+                        <Right>
+                        <Icon name="chevron-right" style={styles.icon} />
+                        </Right>
+
+                    </ListItem>
+                </ScrollView>)
+
+      }
     getISOStringWithoutSecsAndMillisecs(date) {
       const dateAndTime = date.toISOString().split('T')
       const time = dateAndTime[1].split(':')
@@ -75,6 +97,10 @@ export default class Rest extends React.Component {
       console.log(value)
       this.setState({PickerValue: value},()=>this.fetchData());
     }
+
+    clicked = (value) => {
+            this.props.navigation.navigate(value); // open drawer
+        }
 
     fetchData() {
       console.log(this.state.location, this.state.PickerValue)
@@ -106,8 +132,8 @@ export default class Rest extends React.Component {
             console.log(responseData)
         let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
             this.setState({
-                isLoading: false,
                 dataSource: ds.cloneWithRows(responseData.items),
+                isLoading: false,
             });
           }).done();
       }
@@ -125,9 +151,7 @@ export default class Rest extends React.Component {
                     </View>
             )
         }
-        return (
-
-            <View style={[styles.container, { backgroundColor: 'steelblue' }]}>
+        return (<View style={[styles.container, { backgroundColor: 'steelblue' }]}>
 
                 <Picker
                 style={{width: '70%', backgroundColor: '#FFF0E0',
@@ -150,31 +174,7 @@ export default class Rest extends React.Component {
 
                 <ListView
                    dataSource={this.state.dataSource}
-                //renderRow={this.renderRow.bind(this)}
-                renderRow = {(item) =>
-                            <ScrollView>
-
-                                <ListItem onPress={()=>this.props.navigation.navigate("Maps")}>
-                                    <Left>
-                                        <Text style={styles.headerText}> {item.name}</Text>
-                                    </Left>
-
-                                    <Body>
-                                        <Text style={styles.headerText}> {item.dates.start.localTime} </Text>
-                                        <Text style={styles.headerText}> {item.distance} {item.units} </Text>
-                                        <Text style={styles.headerText}>{item._embedded.venues.name}  </Text>
-                                    </Body>
-
-                                    <Right>
-                                    <Icon name="chevron-right" style={styles.icon} />
-                                    </Right>
-
-
-                                </ListItem>
-                            </ScrollView>
-
-                    }
-
+                   renderRow={this._renderRow.bind(this)}
                   keyExtractor={(item, index) => index}
                 ItemSeparatorComponent={this.renderSeparator}
                 />
@@ -182,7 +182,7 @@ export default class Rest extends React.Component {
                 <Button
                 title="View POI"
                 color="#33FFE9"
-                onPress={()=>this.props.navigation.navigate("POI")}
+                onPress={() => this.clicked("POI")}
                 >
                 </Button>
                 </View>
@@ -193,7 +193,7 @@ export default class Rest extends React.Component {
 
 const styles = StyleSheet.create({
     container: {
-        height: 600,
+        height: 400,
     },
     baseText: {
         color: "white",
