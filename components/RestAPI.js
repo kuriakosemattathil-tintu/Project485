@@ -21,12 +21,13 @@ export default class Rest extends React.Component {
         super(props);
         this.state = {
           dataSource: [],
-          PickerValue:'',
+          PickerValue:25,
           isLoading: true,
           location: null,
           errorMessage: null
         }
     this.fetchData = this.fetchData.bind(this);
+    this.filterEvents = this.filterEvents.bind(this);
       //  this.fetchPOI = this.fetchPOI.bind(this);
     }
     static navigationOptions = ({ navigation }) => ({
@@ -50,7 +51,7 @@ export default class Rest extends React.Component {
     }
 
     componentDidMount() {
-      this.fetchData()
+      //this.fetchData()
     }
     _getLocationAsync = async () => {
       let { status } = await Permissions.askAsync(Permissions.LOCATION);
@@ -62,7 +63,7 @@ export default class Rest extends React.Component {
 
       let location = await Location.getCurrentPositionAsync({enableHighAccuracy:true});
       this.setState({ location });
-      //this.fetchData();
+      this.fetchData();
     };
     getISOStringWithoutSecsAndMillisecs(date) {
       const dateAndTime = date.toISOString().split('T')
@@ -70,8 +71,13 @@ export default class Rest extends React.Component {
       return dateAndTime[0]+'T'+time[0]+':'+time[1]+':00Z'
     }
 
+    filterEvents(value){
+      console.log(value)
+      this.setState({PickerValue: value},()=>this.fetchData());
+    }
+
     fetchData() {
-      console.log(this.state.location)
+      console.log(this.state.location, this.state.PickerValue)
         this.setState({
           isLoading: true,
         });
@@ -86,10 +92,10 @@ export default class Rest extends React.Component {
               body: JSON.stringify({
                 lat: this.state.location ? this.state.location.coords.latitude : 37.349642,
                 lng: this.state.location ? this.state.location.coords.longitude : -121.938987,
-                opt: {
+                opts: {
                     sort:"distance,asc",
                     endDateTime:date,
-                    radius:"25",
+                    radius:this.state.PickerValue,
                     unit:"miles"
                 }
 
@@ -97,6 +103,7 @@ export default class Rest extends React.Component {
           })
           .then((response) => response.json())
           .then((responseData) => {
+            console.log(responseData)
         let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
             this.setState({
                 isLoading: false,
@@ -128,15 +135,15 @@ export default class Rest extends React.Component {
                 height: 30}}
                 selectedValue={this.state.PickerValue}
                 onValueChange={(itemValue,itemIndex) =>
-                this.setState({PickerValue:itemValue})}
+                this.filterEvents(itemValue)}
 
                 >
                 <Picker.Item label="Filter By" value="" />
-                <Picker.Item label="< 5 Miles" value="<5 Miles" />
-                <Picker.Item label="< 10 Miles" value="<10 Miles" />
-                <Picker.Item label="< 15 Miles" value="<15 Miles" />
-                <Picker.Item label="< 25 Miles" value="<25 Miles" />
-                <Picker.Item label="< 50 Miles" value="<50 Miles" />
+                <Picker.Item label="< 5 Miles" value={5} />
+                <Picker.Item label="< 10 Miles" value={10} />
+                <Picker.Item label="< 15 Miles" value={20} />
+                <Picker.Item label="< 25 Miles" value={25} />
+                <Picker.Item label="< 50 Miles" value={50} />
                 <Picker.Item label="Any" value="Any" />
 
                 </Picker>
