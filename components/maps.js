@@ -17,7 +17,7 @@ export default class Map extends React.Component {
             isLoading: true
         }
        this.fetchEvent = this.fetchEvent.bind(this);
-    } 
+    }
     static navigationOptions = ({ navigation }) => ({
         title: 'Event Details',
     });
@@ -31,27 +31,29 @@ export default class Map extends React.Component {
     componentDidMount() {
       this.fetchEvent();
     }
-    
+
     fetchEvent() {
+      console.log()
         this.setState({
           dataSource: null,
         });
         fetch(URL,{
             method: 'POST',
             headers: new Headers({
-                       'Content-Type': 'application/json', 
+                       'Content-Type': 'application/json',
               }),
               body: JSON.stringify({
-                id: '16tZA80fOZAGkFvG'
-              
+                id: this.props.navigation.state.params.id
+
             })
           })
           .then((response) => response.json())
-          .then((responseData) => { 
+          .then((responseData) => {
         let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+        console.log(responseData)
             this.setState({
                 isLoading: false,
-                dataSource: ds.cloneWithRows(responseData._embedded.venues),
+                dataSource: ds.cloneWithRows([responseData]),
             });
           })
         .done();
@@ -61,7 +63,7 @@ export default class Map extends React.Component {
     _goSantaClara() {
         openMap({ latitude: 37.335641, longitude: -121.888322, name: 'San Jose' });
       }
-   
+
     renderViewMore(onPress) {
         return (
             <Text onPress={onPress} style={{ fontFamily: "Arial", fontSize: 16, color: 'blue' }}>View more</Text>
@@ -82,19 +84,19 @@ render() {
         )
     }
     return (
-        
+
         <View style={{ flex: 1 }}>
             <MapView style={{ flex: .8 }}
                     initialRegion={{
-                        latitude: 37.3541,
-                        longitude: -121.9552,
+                        latitude: this.props.navigation.state.params.latUser,
+                        longitude: this.props.navigation.state.params.lngUser,
                         latitudeDelta: 0.1,
                         longitudeDelta: 0.1,
                     }}>
                     <MapView.Marker
                         coordinate={{
-                            latitude: 37.3541,
-                            longitude: -121.9552,
+                            latitude: this.props.navigation.state.params.lat,
+                            longitude: this.props.navigation.state.params.lng,
                         }}
                     />
                 </MapView>
@@ -110,12 +112,12 @@ render() {
                 }}>
                     <Text style={styles.header } > Event Name</Text>
                     <Text style={styles.header } > ETA</Text>
-                </View> 
+                </View>
                 <View style={{
                     flexDirection: 'row',
                     justifyContent: 'space-between',
                 }}>
-                    <Text style={styles.content }> Anjelaah johnson </Text>
+                    <Text style={styles.content }> {item.name} </Text>
                     <Text style={styles.content }> 19:20 </Text>
                 </View>
                 <View style={{
@@ -125,7 +127,7 @@ render() {
                 }}>
 
                     <Text style={styles.header }  > Event Address</Text>
-                    <Text style={styles.content }  > {item.address.line1}, {item.city.name} </Text>
+                    <Text style={styles.content }  > {item._embedded.venues[0].address.line1}, {item._embedded.venues[0].city.name} </Text>
                 </View>
                 <View style={{
                     flexDirection: 'row',
@@ -141,14 +143,14 @@ render() {
                     justifyContent: 'space-between',
                     marginBottom: 20,
                 }}>
-                    <Text style={styles.content }> 2018-06-02 </Text>
-                    <Text style={styles.content }> 19:30 </Text>
+                    <Text style={styles.content }> {item.dates.start.localDate} </Text>
+                    <Text style={styles.content }> {item.dates.start.localTime} </Text>
                     <Text style={styles.content }> ~1.5h </Text>
-                    <Text style={styles.content }> {item.name} </Text>
+                    <Text style={styles.content }> {item._embedded.venues[0].name} </Text>
                 </View>
                 </ScrollView>
-                    
-                }  
+
+                }
               keyExtractor={(item, index) => index}
             ItemSeparatorComponent={this.renderSeparator}
             />
@@ -171,7 +173,7 @@ render() {
                 >
                     Navigate Now
                 </Text>
-                 </TouchableOpacity> 
+                 </TouchableOpacity>
                  </View>
         </View>
     );
@@ -180,7 +182,7 @@ render() {
 
 const styles = StyleSheet.create({
         header: {
-            fontWeight: "bold", 
+            fontWeight: "bold",
             fontSize: 18 ,
         },
         content: {

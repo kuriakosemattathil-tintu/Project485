@@ -68,7 +68,7 @@ export default class Rest extends React.Component {
     };
     _renderRow = (item) =>{return(<ScrollView>
 
-                    <ListItem onPress={()=>this.props.navigation.navigate("Maps")}>
+                    <ListItem onPress={()=>this.props.navigation.navigate("Maps",{ id: item.id , lat: item._embedded.venues[0].location.latitude , lng: item._embedded.venues[0].location.longitude, latUser:this.state.location.coords.latitude, lngUser:this.state.location.coords.longitude})}>
                         <Left>
                             <Text style={styles.headerText}> {item.name}</Text>
                         </Left>
@@ -193,7 +193,7 @@ export default class Rest extends React.Component {
 
 const styles = StyleSheet.create({
     container: {
-        height: 400,
+        flex: 1,
     },
     baseText: {
         color: "white",

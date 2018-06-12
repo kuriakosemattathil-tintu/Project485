@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
         height: box_height
     },
     box1: {
-        flex: 1,
+        flex: 0.5,
         backgroundColor: 'white'
     },
     box2: {
